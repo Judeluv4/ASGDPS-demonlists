@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>ASGDPS Demonlist</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
+:root{
+ --bg1:#0b1220;
+ --bg2:#101a2c;
+ --panel:#1a2538;
+ --panel2:#162033;
+ --border:#2a3a55;
+ --text:#e6ecf3;
+ --muted:#9fb0c7;
+ --accent:#4da3ff;
+ --highlight:#ff4d4d;
+ --glow-color:#ff4d4d;
+}
+
+body.light{
+ --bg1:#ffffff;
+ --bg2:#f4f4f4;
+ --panel:#ffffff;
+ --panel2:#f9f9f9;
+ --border:#e0e0e0;
+ --text:#111;
+ --muted:#777;
+ --accent:#d4af37;
+ --highlight:#b68d00;
+ --glow-color:#d4af37;
+}
+
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+ background:radial-gradient(circle at top,var(--bg2),var(--bg1));
+ color:var(--text);
+ transition:background .4s ease,color .3s ease;
+}
+
+/* NAV */
+nav{
+ height:64px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 24px;
+ background:var(--panel);
+ border-bottom:1px solid var(--border);
+}
+
+.nav-left{display:flex;gap:20px;align-items:center}
+nav h1{margin:0;font-size:18px}
+
+nav button{
+ background:none;
+ border:none;
+ color:var(--muted);
+ font-weight:600;
+ cursor:pointer;
+ font-size:15px;
+ transition:.2s;
+}
+
+nav button.active,
+nav button:hover{
+ color:var(--accent);
+}
+
+.themeBtn{
+ padding:6px 12px;
+ border-radius:6px;
+ border:1px solid var(--border);
+}
+
+/* VIEW TRANSITIONS */
+.view{
+ display:none;
+ opacity:0;
+ transform:translateY(8px);
+ transition:opacity .25s ease, transform .25s ease;
+}
+
+.view.active{
+ display:block;
+ opacity:1;
+ transform:translateY(0);
+}
+
+/* SEARCH */
+.search{
+ max-width:1100px;
+ margin:20px auto;
+ padding:0 20px;
+}
+
+.search input{
+ width:100%;
+ padding:14px;
+ border-radius:10px;
+ border:1px solid var(--border);
+ background:var(--panel2);
+ color:var(--text);
+ font-size:16px;
+}
+
+/* DEMON LIST */
+#list{
+ max-width:1100px;
+ margin:auto;
+ padding:0 20px 40px;
+}
+
+.card{
+ display:grid;
+ grid-template-columns:200px 1fr;
+ gap:20px;
+ padding:18px;
+ background:var(--panel);
+ border-radius:14px;
+ border:1px solid var(--border);
+ margin-bottom:18px;
+ transition:.2s ease;
+ cursor:pointer;
+}
+
+.card:hover{
+ background:var(--panel2);
+ transform:translateY(-3px);
+}
+
+.card.hardestCard{
+ border:3px solid var(--highlight);
+ box-shadow:0 0 14px 4px var(--glow-color);
+}
+
+body:not(.light) .card.hardestCard{
+ box-shadow:0 0 22px 6px var(--glow-color);
+}
+
+.thumb{
+ width:100%;
+ height:110px;
+ border-radius:10px;
+ background:#1e2b44;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ color:#999;
+ background-size:cover;
+ background-position:center;
+ cursor:pointer;
+}
+
+.rank{color:var(--accent);font-weight:700}
+
+.publisher{
+ font-weight:bold;
+ color:var(--text);
+ font-size:15px;
+ margin-top:4px;
+}
+
+.points{
+ color:var(--accent);
+ margin-top:6px;
+ font-size:14px;
+}
+
+/* STATS */
+.stats{
+ display:grid;
+ grid-template-columns:300px 1fr;
+ gap:20px;
+ max-width:1100px;
+ margin:20px auto;
+ padding:0 20px;
+}
+
+.players{
+ background:var(--panel);
+ border:1px solid var(--border);
+ border-radius:14px;
+ padding:10px;
+}
+
+.player{
+ display:flex;
+ justify-content:space-between;
+ padding:10px;
+ border-radius:10px;
+ cursor:pointer;
+ transition:.2s;
+}
+
+.player:hover,
+.player.active{
+ background:var(--panel2);
+}
+
+.profile{
+ background:var(--panel);
+ border:1px solid var(--border);
+ border-radius:14px;
+ padding:20px;
+}
+
+.hardestProfileCard{
+ margin-bottom:20px;
+ padding:18px;
+ border-radius:12px;
+ border:3px solid var(--highlight);
+ background:linear-gradient(135deg,var(--panel2),var(--panel));
+ box-shadow:0 0 14px 4px var(--glow-color);
+}
+
+body:not(.light) .hardestProfileCard{
+ box-shadow:0 0 22px 6px var(--glow-color);
+}
+
+.hardestTitle{
+ font-size:13px;
+ letter-spacing:1px;
+ text-transform:uppercase;
+ color:var(--highlight);
+ margin-bottom:6px;
+}
+
+.hardestName{
+ font-size:20px;
+ font-weight:700;
+}
+
+.beatEntry{
+ padding:8px 0;
+ border-bottom:1px solid var(--border);
+ font-size:14px;
+ cursor:pointer;
+ transition:.2s;
+}
+
+.beatEntry:hover{
+ background:var(--panel2);
+ padding-left:6px;
+ border-radius:6px;
+}
+
+/* LEVEL PAGE */
+.levelPage{
+ max-width:1000px;
+ margin:auto;
+ padding:30px 20px;
+}
+
+.backBtn{
+ background:none;
+ border:1px solid var(--border);
+ color:var(--muted);
+ padding:8px 14px;
+ border-radius:8px;
+ cursor:pointer;
+ margin-bottom:20px;
+}
+
+.videoWrapper{
+ position:relative;
+ padding-bottom:56.25%;
+ height:0;
+ overflow:hidden;
+ border-radius:14px;
+ margin-bottom:20px;
+}
+
+.videoWrapper iframe{
+ position:absolute;
+ width:100%;
+ height:100%;
+}
+
+.victorCard{
+ background:var(--panel2);
+ padding:8px 12px;
+ border-radius:8px;
+ margin-bottom:6px;
+ font-weight:bold;
+ color:var(--text);
+ cursor:pointer;
+ transition:.2s;
+}
+
+.victorCard:hover{
+ background:var(--accent);
+ color:#fff;
+}
+
+footer{
+ text-align:center;
+ padding:30px;
+ color:var(--muted);
+ border-top:1px solid var(--border);
+}
+</style>
+</head>
+<body class="light">
+
+<nav>
+<div class="nav-left">
+<h1>ASGDPS Demonlist – Judeluv_4x</h1>
+<button id="tabList" class="active">Demonlist</button>
+<button id="tabStats">Stats Viewer</button>
+</div>
+<button id="themeToggle" class="themeBtn">Switch Theme</button>
+</nav>
+
+<div id="demonView" class="view active">
+<div class="search">
+<input type="text" id="searchInput" placeholder="Search levels..." autocomplete="off" />
+</div>
+<main id="list"></main>
+</div>
+
+<div id="statsView" class="view">
+<div class="stats">
+<div class="players" id="playerList"></div>
+<div class="profile" id="profile"></div>
+</div>
+</div>
+
+<footer>judeluv_4x 2026</footer>
+
+<script>
+// DEMONS
+const DEMONS=[
+ {rank:1,name:"Cosmos",creator:"Judeluv4",thumbnail:"https://i.ytimg.com/vi/mL0y4HWpPlU/maxresdefault.jpg",youtube:"mL0y4HWpPlU"},
+ {rank:2,name:"Wacced out murals",creator:"Nightrider"},
+ {rank:3,name:"Hailfire",creator:"Judeluv4"}
+];
+
+// PLAYERS
+const PLAYERS=[
+ {name:"Judeluv4",completions:["Cosmos","Wacced out murals","Hailfire"]},
+ {name:"Nightrider",completions:["Wacced out murals"]},
+ {name:"Jacoma",completions:["Hailfire"]}
+];
+
+// POINTERCRATE STYLE POINTS
+function basePoints(rank){
+ const maxPoints=100;
+ const decay=0.94;
+ return Math.round(maxPoints*Math.pow(decay,rank-1));
+}
+
+const hardestRank=Math.min(...DEMONS.map(d=>d.rank));
+const hardestDemonName=DEMONS.find(d=>d.rank===hardestRank).name;
+
+const list=document.getElementById("list");
+
+function renderList(data){
+ list.innerHTML="";
+ data.forEach(d=>{
+  const card=document.createElement("div");
+  card.className="card"+(d.name===hardestDemonName?" hardestCard":"");
+
+  card.innerHTML=`
+   <div class="thumb" style="${d.thumbnail?`background-image:url('${d.thumbnail}')`:''}">
+    ${!d.thumbnail?'Thumbnail':''}
+   </div>
+   <div>
+    <h2><span class="rank">#${d.rank}</span> – ${d.name}</h2>
+    <div class="publisher">Published by ${d.creator}</div>
+    <div class="points">${basePoints(d.rank)} points</div>
+   </div>`;
+
+  // Thumbnail opens YouTube
+  if(d.youtube){
+   card.querySelector(".thumb").onclick=e=>{
+    e.stopPropagation();
+    window.open(`https://www.youtube.com/watch?v=${d.youtube}`,"_blank");
+   };
+  }
+
+  // Card opens level page
+  card.onclick=()=>showLevel(d.name);
+
+  list.appendChild(card);
+ });
+}
+
+renderList(DEMONS);
+
+document.getElementById("searchInput").addEventListener("input",e=>{
+ const val=e.target.value.toLowerCase();
+ renderList(val?DEMONS.filter(d=>d.name.toLowerCase().includes(val)):DEMONS);
+});
+
+// STATS CALC
+PLAYERS.forEach(p=>{
+ p.score=0;
+ p.beaten=[];
+ p.completions.forEach(name=>{
+  const lvl=DEMONS.find(d=>d.name===name);
+  if(lvl){
+   const pts=basePoints(lvl.rank);
+   p.score+=pts;
+   p.beaten.push({name:lvl.name,rank:lvl.rank,points:pts});
+  }
+ });
+ p.beaten.sort((a,b)=>a.rank-b.rank);
+ p.hardest=p.beaten[0];
+});
+PLAYERS.sort((a,b)=>b.score-a.score);
+
+const playerList=document.getElementById("playerList");
+const profile=document.getElementById("profile");
+
+function renderProfile(p){
+ profile.innerHTML=`
+  <h2>${p.name}</h2>
+  <p>Rank: #${PLAYERS.indexOf(p)+1}</p>
+  <p>Total Score: ${p.score}</p>`;
+
+ if(p.hardest){
+  profile.innerHTML+=`
+   <div class="hardestProfileCard">
+    <div class="hardestTitle">Hardest Demon</div>
+    <div class="hardestName">#${p.hardest.rank} ${p.hardest.name}</div>
+   </div>`;
+ }
+
+ profile.innerHTML+="<h3>Beaten Levels</h3>";
+
+ p.beaten.forEach(b=>{
+  profile.innerHTML+=`
+   <div class="beatEntry" onclick="showLevel('${b.name}')">
+    #${b.rank} ${b.name} — ${b.points} pts
+   </div>`;
+ });
+}
+
+PLAYERS.forEach((p,i)=>{
+ const div=document.createElement("div");
+ div.className="player"+(i===0?" active":"");
+ div.innerHTML=`<span>#${i+1} ${p.name}</span><span>${p.score}</span>`;
+ div.onclick=()=>{
+  document.querySelectorAll(".player").forEach(x=>x.classList.remove("active"));
+  div.classList.add("active");
+  renderProfile(p);
+  switchView("statsView");
+ };
+ playerList.appendChild(div);
+});
+renderProfile(PLAYERS[0]);
+
+function goToPlayer(name){
+ const playerDiv=[...playerList.children].find(div=>div.textContent.includes(name));
+ if(playerDiv){
+  playerDiv.click();
+  switchView("statsView");
+ }
+}
+
+// LEVEL PAGE
+function showLevel(name){
+ const d=DEMONS.find(l=>l.name===name);
+ if(!d)return;
+
+ document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+
+ let levelView=document.getElementById("levelView");
+ if(!levelView){
+  levelView=document.createElement("div");
+  levelView.id="levelView";
+  levelView.className="view";
+  document.body.insertBefore(levelView,document.querySelector("footer"));
+ }
+
+ levelView.classList.add("active");
+
+ const victors=PLAYERS.filter(p=>p.completions.includes(d.name));
+
+ const victorsHTML=victors.map(v=>
+  `<div class="victorCard" onclick="goToPlayer('${v.name}')">${v.name}</div>`
+ ).join("");
+
+ levelView.innerHTML=`
+  <div class="levelPage">
+   <button class="backBtn" onclick="switchView('demonView')">← Back</button>
+
+   ${d.youtube?`
+   <div class="videoWrapper">
+    <iframe src="https://www.youtube.com/embed/${d.youtube}?rel=0"
+     frameborder="0" allowfullscreen></iframe>
+   </div>`:""}
+
+   <h1>#${d.rank} ${d.name}</h1>
+   <p class="publisher">Published by <strong>${d.creator}</strong></p>
+   <p>Points: ${basePoints(d.rank)}</p>
+
+   <h3>Victors:</h3>
+   <div class="victors">${victorsHTML||"None yet"}</div>
+  </div>`;
+}
+
+function switchView(id){
+ document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.getElementById("tabList").classList.toggle("active",id==="demonView");
+ document.getElementById("tabStats").classList.toggle("active",id==="statsView");
+}
+
+document.getElementById("tabList").onclick=()=>switchView("demonView");
+document.getElementById("tabStats").onclick=()=>switchView("statsView");
+document.getElementById("themeToggle").onclick=()=>document.body.classList.toggle("light");
+</script>
+</body>
+</html>
